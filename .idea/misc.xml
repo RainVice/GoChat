@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/MyProjects/Android Project/Socket/SocketTest_1/app/src/main/res/drawable/ic_baseline_message_24.xml" value="0.194" />
+        <entry key="..\:/MyProjects/Android Project/Socket/SocketTest_1/app/src/main/res/drawable/ic_main_contact_200.xml" value="0.3065" />
+        <entry key="..\:/MyProjects/Android Project/Socket/SocketTest_1/app/src/main/res/drawable/ic_main_message_200.xml" value="0.3065" />
+        <entry key="..\:/MyProjects/Android Project/Socket/SocketTest_1/app/src/main/res/drawable/ic_main_nearby.xml" value="0.3065" />
+        <entry key="..\:/MyProjects/Android Project/Socket/SocketTest_1/app/src/main/res/layout/activity_main.xml" value="0.33" />
+        <entry key="..\:/MyProjects/Android Project/Socket/SocketTest_1/app/src/main/res/layout/fragment_contact.xml" value="0.4358974358974359" />
+        <entry key="..\:/MyProjects/Android Project/Socket/SocketTest_1/app/src/main/res/layout/fragment_message.xml" value="0.4239316239316239" />
+        <entry key="..\:/MyProjects/Android Project/Socket/SocketTest_1/app/src/main/res/layout/fragment_nearby.xml" value="0.4358974358974359" />
+        <entry key="..\:/MyProjects/Android Project/Socket/SocketTest_1/app/src/main/res/layout/item_nearby_list.xml" value="0.43504273504273505" />
+        <entry key="..\:/MyProjects/Android Project/Socket/SocketTest_1/app/src/main/res/menu/b_n_v_menu.xml" value="0.33" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="11" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/build/classes" />
+  </component>
+  <component name="ProjectType">
+    <option name="id" value="Android" />
+  </component>
+</project>

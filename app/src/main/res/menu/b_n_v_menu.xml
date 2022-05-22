@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/message"
+        android:title="聊天"
+        android:icon="@drawable/ic_main_message_200"/>
+
+    <item
+        android:id="@+id/contact"
+        android:title="联系人"
+        android:icon="@drawable/ic_main_contact_200"/>
+    <item
+        android:id="@+id/nearby"
+        android:title="附近"
+        android:icon="@drawable/ic_main_nearby"/>
+
+</menu>
