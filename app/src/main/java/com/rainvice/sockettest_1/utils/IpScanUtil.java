@@ -65,7 +65,7 @@ public class IpScanUtil{
      *
      * @return
      */
-    private static String getHostIp() {
+    public static String getHostIp() {
         try {
             Enumeration<NetworkInterface> allNetInterfaces = NetworkInterface.getNetworkInterfaces();
             while (allNetInterfaces.hasMoreElements()) {
@@ -93,7 +93,7 @@ public class IpScanUtil{
      * @param ip
      * @return
      */
-    private static String getNetworkSegment(String ip) {
+    public static String getNetworkSegment(String ip) {
         int startIndex = ip.lastIndexOf(".");
         return ip.substring(0, startIndex + 1);
     }

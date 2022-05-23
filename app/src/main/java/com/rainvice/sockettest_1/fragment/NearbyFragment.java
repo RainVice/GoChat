@@ -20,6 +20,9 @@ import android.widget.TextView;
 
 import com.rainvice.sockettest_1.Adapter.RvAdapter;
 import com.rainvice.sockettest_1.R;
+import com.rainvice.sockettest_1.protocol.MsgType;
+import com.rainvice.sockettest_1.protocol.RainviceProtocol;
+import com.rainvice.sockettest_1.server.SendMessageServer;
 import com.rainvice.sockettest_1.utils.IpScanUtil;
 import com.rainvice.sockettest_1.utils.LogUtil;
 
@@ -60,6 +63,16 @@ public class NearbyFragment extends Fragment {
             public void onFind(String ip) {
                 LogUtil.d(TAG,"成功连接：" + ip);
                 ips.add(ip);
+
+                RainviceProtocol<String> protocol = new RainviceProtocol<>(MsgType.GET_NAME);
+                SendMessageServer sendMessageServer = new SendMessageServer(ip, protocol);
+                sendMessageServer.sendMsg(new SendMessageServer.Callback() {
+                    @Override
+                    public void callback(RainviceProtocol<String> result) {
+                        LogUtil.d(TAG,result.getData());
+                    }
+                });
+
             }
 
             @Override
@@ -70,6 +83,21 @@ public class NearbyFragment extends Fragment {
                     public void callback(View itemView, int position, String s) {
                         TextView textView = itemView.findViewById(R.id.ip);
                         textView.setText(s);
+
+                        itemView.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                RainviceProtocol<String> protocol = new RainviceProtocol<>(MsgType.GET_NAME);
+                                SendMessageServer sendMessageServer = new SendMessageServer("192.168.1.213", protocol);
+                                sendMessageServer.sendMsg(new SendMessageServer.Callback() {
+                                    @Override
+                                    public void callback(RainviceProtocol<String> result) {
+                                        LogUtil.d(TAG,result.getData());
+                                    }
+                                });
+                            }
+                        });
+
                     }
                 });
                 mRecyclerView.setAdapter(adapter);

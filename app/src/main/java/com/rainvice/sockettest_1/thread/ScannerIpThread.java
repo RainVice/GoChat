@@ -34,7 +34,7 @@ public class ScannerIpThread extends Thread{
     @Override
     public void run() {
         //创建长度为 50 的线程池
-        ExecutorService executorService = Executors.newFixedThreadPool(50);
+        ExecutorService executorService = Executors.newFixedThreadPool(254);
         final CountDownLatch latch = new CountDownLatch(254);
 
         LogUtil.d(TAG, "scanIp: 开始扫描 " + mIps + " 网段");
