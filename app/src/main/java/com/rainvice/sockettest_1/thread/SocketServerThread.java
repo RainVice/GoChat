@@ -9,6 +9,7 @@ import com.rainvice.sockettest_1.constant.Status;
 import com.rainvice.sockettest_1.protocol.MsgType;
 import com.rainvice.sockettest_1.protocol.RvRequestProtocol;
 import com.rainvice.sockettest_1.protocol.RvResponseProtocol;
+import com.rainvice.sockettest_1.utils.DataUtil;
 import com.rainvice.sockettest_1.utils.IpScanUtil;
 import com.rainvice.sockettest_1.utils.LogUtil;
 
@@ -88,7 +89,7 @@ public class SocketServerThread extends Thread{
             if (Objects.nonNull(requestProtocol)) {
                 //获取用户名
                 if (MsgType.GET_NAME.equals(requestProtocol.getType())) {
-                    RvResponseProtocol<String> responseProtocol = new RvResponseProtocol<>(MsgType.RECEIPT, RvResponseProtocol.OK, "沐雨声");
+                    RvResponseProtocol<String> responseProtocol = new RvResponseProtocol<>(MsgType.RECEIPT, RvResponseProtocol.OK, DataUtil.getUsername());
                     String s = gson.toJson(responseProtocol);
                     BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
                     bw.write(s);

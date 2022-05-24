@@ -2,6 +2,7 @@ package com.rainvice.sockettest_1;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
@@ -15,6 +16,7 @@ import com.rainvice.sockettest_1.Adapter.Vp2Adapter;
 import com.rainvice.sockettest_1.fragment.ContactFragment;
 import com.rainvice.sockettest_1.fragment.MessageFragment;
 import com.rainvice.sockettest_1.fragment.NearbyFragment;
+import com.rainvice.sockettest_1.utils.DataUtil;
 
 import java.util.ArrayList;
 
@@ -35,6 +37,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+
+        //设置设备名称
+        String bluetoothName = Settings.Secure.getString(getContentResolver(), "bluetooth_name");
+        DataUtil.setUsername(bluetoothName);
+
 
         //将三个 fragment 添加到 ViewPager2 中
         MessageFragment messageFragment = new MessageFragment();

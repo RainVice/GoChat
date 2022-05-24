@@ -3,12 +3,11 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/AndroidProject/SocketTest_1/app/src/main/res/layout/fragment_message.xml" value="0.34791666666666665" />
-        <entry key="..\:/AndroidProject/SocketTest_1/app/src/main/res/layout/fragment_nearby.xml" value="0.33" />
         <entry key="..\:/MyProjects/Android Project/Socket/SocketTest_1/app/src/main/res/drawable/ic_baseline_message_24.xml" value="0.194" />
         <entry key="..\:/MyProjects/Android Project/Socket/SocketTest_1/app/src/main/res/drawable/ic_main_contact_200.xml" value="0.3065" />
         <entry key="..\:/MyProjects/Android Project/Socket/SocketTest_1/app/src/main/res/drawable/ic_main_message_200.xml" value="0.3065" />
         <entry key="..\:/MyProjects/Android Project/Socket/SocketTest_1/app/src/main/res/drawable/ic_main_nearby.xml" value="0.3065" />
+        <entry key="..\:/MyProjects/Android Project/Socket/SocketTest_1/app/src/main/res/drawable/ic_nearby_refresh_200.xml" value="0.296" />
         <entry key="..\:/MyProjects/Android Project/Socket/SocketTest_1/app/src/main/res/layout/activity_main.xml" value="0.33" />
         <entry key="..\:/MyProjects/Android Project/Socket/SocketTest_1/app/src/main/res/layout/fragment_contact.xml" value="0.4358974358974359" />
         <entry key="..\:/MyProjects/Android Project/Socket/SocketTest_1/app/src/main/res/layout/fragment_message.xml" value="0.4239316239316239" />

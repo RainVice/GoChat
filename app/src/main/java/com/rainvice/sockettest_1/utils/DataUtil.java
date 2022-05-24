@@ -8,6 +8,15 @@ public class DataUtil extends Application {
 
     private static Context context;
 
+    private static String username = "匿名用户";
+
+    public static String getUsername() {
+        return username;
+    }
+
+    public static void setUsername(String username) {
+        DataUtil.username = username;
+    }
 
     public static Context getContext() {
         return context;

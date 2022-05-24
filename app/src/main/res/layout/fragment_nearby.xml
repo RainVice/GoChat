@@ -8,7 +8,7 @@
 
     <LinearLayout
         android:gravity="center_vertical"
-        android:paddingStart="15dp"
+        android:paddingHorizontal="15dp"
         android:background="@color/salmon"
         android:layout_width="match_parent"
         android:layout_height="50dp">
@@ -20,14 +20,28 @@
                 android:layout_height="23dp"
                 android:src="@drawable/ic_main_nearby"/>
             <TextView
-                android:layout_gravity="center"
-                android:gravity="center"
+                android:layout_gravity="center_vertical"
                 android:layout_marginStart="7dp"
                 android:text="附近用户"
                 android:textColor="@color/white"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
+
+            <LinearLayout
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"/>
+
+            <ImageView
+                android:id="@+id/refresh"
+                android:layout_width="23dp"
+                android:layout_height="23dp"
+                android:src="@drawable/ic_nearby_refresh_200"/>
+
         </LinearLayout>
+
+
+
     </LinearLayout>
 
     <TextView
