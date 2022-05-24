@@ -5,7 +5,8 @@ import android.os.Message;
 
 import com.google.gson.Gson;
 import com.rainvice.sockettest_1.constant.Status;
-import com.rainvice.sockettest_1.protocol.RainviceProtocol;
+import com.rainvice.sockettest_1.protocol.RvRequestProtocol;
+import com.rainvice.sockettest_1.protocol.RvResponseProtocol;
 import com.rainvice.sockettest_1.utils.LogUtil;
 
 import java.io.BufferedReader;
@@ -24,7 +25,7 @@ public class SendMsgThread extends Thread{
     private InputStream mIs;
     private OutputStream mOs;
     private String mIp;
-    private RainviceProtocol<String> mMsg;
+    private RvRequestProtocol<String> mMsg;
     private Socket mSocket;
 
     /**
@@ -32,7 +33,7 @@ public class SendMsgThread extends Thread{
      * @param ip IP地址
      * @param msg 发送的消息
      */
-    public SendMsgThread(String ip,RainviceProtocol<String> msg){
+    public SendMsgThread(String ip, RvRequestProtocol<String> msg){
         this.mIp = ip;
         this.mMsg = msg;
     }
@@ -43,7 +44,7 @@ public class SendMsgThread extends Thread{
      * @param msg 发送的消息
      * @param handler Handler，如果需要发送消息以后返回数据，那么就可以传入此对象
      */
-    public SendMsgThread(String ip, RainviceProtocol<String> msg, Handler handler){
+    public SendMsgThread(String ip, RvRequestProtocol<String> msg, Handler handler){
         this.mIp = ip;
         this.mMsg = msg;
         this.mHandler = handler;
@@ -53,6 +54,7 @@ public class SendMsgThread extends Thread{
     public void run() {
         try {
             mSocket = new Socket(mIp, 6898);
+            mSocket.setSoTimeout(1000);
             //构建IO
             mOs = mSocket.getOutputStream();
 
@@ -73,16 +75,12 @@ public class SendMsgThread extends Thread{
                 BufferedReader br = new BufferedReader(new InputStreamReader(mIs));
                 String inMsg = br.readLine();
                 LogUtil.d("接收到返回数据",inMsg);
-                //将消息转换为 RainviceProtocol
-                RainviceProtocol<String> protocol = new RainviceProtocol<>(inMsg);
-//                RainviceProtocol<String> protocol = gson.fromJson(br, RainviceProtocol.class);
-
-                //告诉主线程获取回执成功
+                //将消息转换为 RvResponseProtocol
+                RvResponseProtocol<String> protocol = gson.fromJson(inMsg, RvResponseProtocol.class);
                 Message message = new Message();
                 message.what = Status.SUCCESS;
                 message.obj = protocol;
                 mHandler.sendMessage(message);
-
                 mIs.close();
             }
             mOs.close();

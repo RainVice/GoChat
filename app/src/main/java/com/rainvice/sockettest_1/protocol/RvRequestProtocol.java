@@ -6,7 +6,7 @@ package com.rainvice.sockettest_1.protocol;
  * 以 json 形式呈现
  */
 
-public class RainviceProtocol<T> {
+public class RvRequestProtocol<T> {
 
     //消息类型
     private String type;
@@ -15,25 +15,23 @@ public class RainviceProtocol<T> {
     private T data;
 
 
-    public RainviceProtocol(){
+    public RvRequestProtocol(){
 
     }
 
-    public RainviceProtocol(String type, T data) {
+    public RvRequestProtocol(String type, T data) {
         this.type = type;
         this.data = data;
     }
 
-    public RainviceProtocol(String type) {
-        this.type = type;
-        this.data = null;
-    }
-
-    public RainviceProtocol(T data) {
+    public RvRequestProtocol(T data) {
         this.data = data;
         this.type = MsgType.MESSAGE;
     }
 
+    public static RvRequestProtocol<String> getName(){
+        return new RvRequestProtocol<String>(MsgType.GET_NAME,null);
+    }
 
     public String getType() {
         return type;

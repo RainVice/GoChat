@@ -1,13 +1,14 @@
 package com.rainvice.sockettest_1.thread;
 
 import android.os.Handler;
-import android.util.Base64;
+import android.os.Message;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.rainvice.sockettest_1.constant.Status;
 import com.rainvice.sockettest_1.protocol.MsgType;
-import com.rainvice.sockettest_1.protocol.RainviceProtocol;
-import com.rainvice.sockettest_1.service.SocketServerService;
+import com.rainvice.sockettest_1.protocol.RvRequestProtocol;
+import com.rainvice.sockettest_1.protocol.RvResponseProtocol;
 import com.rainvice.sockettest_1.utils.IpScanUtil;
 import com.rainvice.sockettest_1.utils.LogUtil;
 
@@ -16,10 +17,8 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Arrays;
 import java.util.Objects;
 
 /**
@@ -48,31 +47,12 @@ public class SocketServerThread extends Thread{
             Log.d(TAG, "onCreate: Socket服务已启动");
             while (isOpen) {
                 Socket socket = serverSocket.accept();
-
                 //业务处理代码
                 new Thread(() -> {
                     try {
-                        LogUtil.d(TAG, "onCreate: 客户端:" + socket.getInetAddress().getHostAddress() + "已连接到服务器");
-                        BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                        //读取客户端发送来的消息
-                        String mess = br.readLine();
-                        LogUtil.d("接受消息",mess);
-
-                        Gson gson = new Gson();
-                        RainviceProtocol rainviceProtocol = null;
-                        try {
-                            rainviceProtocol = gson.fromJson(mess, RainviceProtocol.class);
-                        }catch (Exception e){
-
-                        }
-
-                        //返回数据
-                        if (Objects.nonNull(rainviceProtocol) && MsgType.GET_NAME.equals(rainviceProtocol.getType())) {
-                            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-                            bw.write(IpScanUtil.getHostIp());
-                            bw.flush();
-                            LogUtil.d(TAG,"返回数据");
-                        }
+                        LogUtil.d(TAG, "客户端:" + socket.getInetAddress().getHostAddress() + " 已连接到服务器");
+                        //将消息发送到统一消息处理中心处理
+                        messageManage(socket);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }finally {
@@ -89,6 +69,60 @@ public class SocketServerThread extends Thread{
         }
     }
 
+    private void messageManage(Socket socket) throws IOException {
+        socket.setSoTimeout(1000);
+        BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        //读取客户端发送来的消息
+        String mess = br.readLine();
+        Gson gson = new Gson();
+        if (Objects.nonNull(mess)){
+            RvRequestProtocol requestProtocol = null;
+            LogUtil.d("接收到消息", mess);
+            try {
+                //转换为 bean 类
+                requestProtocol = gson.fromJson(mess, RvRequestProtocol.class);
+            } catch (Exception e) {
+                LogUtil.d("转换Bean类失败",e.getMessage());
+            }
+
+            if (Objects.nonNull(requestProtocol)) {
+                //获取用户名
+                if (MsgType.GET_NAME.equals(requestProtocol.getType())) {
+                    RvResponseProtocol<String> responseProtocol = new RvResponseProtocol<>(MsgType.RECEIPT, RvResponseProtocol.OK, "沐雨声");
+                    String s = gson.toJson(responseProtocol);
+                    BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+                    bw.write(s);
+                    bw.flush();
+                }else {
+                    Message message = new Message();
+                    message.what = Status.SUCCESS;
+                    message.obj = requestProtocol;
+                    mHandler.sendMessage(message);
+                }
+            }else {
+                fail(socket, gson,"数据接收失败，转换 Bean 类失败");
+            }
+        }else {
+            fail(socket, gson,"数据接收失败,接收到空数据");
+        }
+    }
+
+    /**
+     * 接受数据失败
+     * @param socket
+     * @param gson
+     * @throws IOException
+     */
+    private void fail(Socket socket, Gson gson,String msg) throws IOException {
+        Message message = new Message();
+        message.what = Status.ERROR;
+        mHandler.sendMessage(message);
+        RvResponseProtocol<String> responseProtocol = new RvResponseProtocol<>(MsgType.RECEIPT, RvResponseProtocol.FAIL, msg);
+        String s = gson.toJson(responseProtocol);
+        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+        bw.write(s);
+        bw.flush();
+    }
 
 
 }

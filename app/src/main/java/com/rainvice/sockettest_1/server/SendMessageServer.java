@@ -3,17 +3,18 @@ package com.rainvice.sockettest_1.server;
 import android.os.Handler;
 
 import com.rainvice.sockettest_1.constant.Status;
-import com.rainvice.sockettest_1.protocol.RainviceProtocol;
+import com.rainvice.sockettest_1.protocol.RvRequestProtocol;
+import com.rainvice.sockettest_1.protocol.RvResponseProtocol;
 import com.rainvice.sockettest_1.thread.SendMsgThread;
 
 public class SendMessageServer {
 
 
     private String mIp;
-    private RainviceProtocol<String> mProtocol;
+    private RvRequestProtocol<String> mProtocol;
     private Handler mHandler;
 
-    public SendMessageServer(String ip, RainviceProtocol<String> protocol){
+    public SendMessageServer(String ip, RvRequestProtocol<String> protocol){
 
         this.mIp = ip;
         this.mProtocol = protocol;
@@ -25,7 +26,7 @@ public class SendMessageServer {
         this.mHandler = new Handler(message -> {
             switch (message.what){
                 case Status.SUCCESS:
-                    callback.callback((RainviceProtocol<String>) message.obj);
+                    callback.callback((RvResponseProtocol<String>) message.obj);
                     break;
             }
             return true;
@@ -37,7 +38,7 @@ public class SendMessageServer {
 
 
     public interface Callback{
-        void callback(RainviceProtocol<String> result);
+        void callback(RvResponseProtocol<String> result);
     }
 
 

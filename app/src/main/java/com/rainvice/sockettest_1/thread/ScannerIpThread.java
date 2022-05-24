@@ -54,7 +54,7 @@ public class ScannerIpThread extends Thread{
                 message.obj = ip;
 
                 try {
-                    socket.connect(inetSocketAddress);
+                    socket.connect(inetSocketAddress,1000);
                     message.what = Status.SUCCESS;
                 } catch (IOException e) {
                     message.what = Status.ERROR;
