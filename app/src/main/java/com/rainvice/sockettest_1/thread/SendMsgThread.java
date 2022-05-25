@@ -5,6 +5,7 @@ import android.os.Message;
 
 import com.google.gson.Gson;
 import com.rainvice.sockettest_1.constant.Status;
+import com.rainvice.sockettest_1.protocol.MsgType;
 import com.rainvice.sockettest_1.protocol.RvRequestProtocol;
 import com.rainvice.sockettest_1.protocol.RvResponseProtocol;
 import com.rainvice.sockettest_1.utils.LogUtil;
@@ -86,21 +87,25 @@ public class SendMsgThread extends Thread{
         } catch (IOException e) {
             e.printStackTrace();
             //将消息转换为 RvResponseProtocol
-            RvResponseProtocol<String> protocol = gson.fromJson("发送失败", RvResponseProtocol.class);
+            RvResponseProtocol<String> protocol = new RvResponseProtocol<>(MsgType.MESSAGE,"发送失败");
             Message message = new Message();
             message.what = Status.ERROR;
             message.obj = protocol;
             mHandler.sendMessage(message);
         }finally {
-            try {
-                mOs.close();
-            } catch (IOException e) {
-                e.printStackTrace();
+            if (mOs != null){
+                try {
+                    mOs.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
-            try {
-                mSocket.close();
-            } catch (IOException e) {
-                e.printStackTrace();
+            if (mSocket != null){
+                try {
+                    mSocket.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }

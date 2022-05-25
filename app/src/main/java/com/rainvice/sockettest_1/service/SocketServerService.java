@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.widget.Toast;
 
+import com.rainvice.sockettest_1.event.BusToChatEvent;
 import com.rainvice.sockettest_1.bean.DialogBean;
 import com.rainvice.sockettest_1.bean.DialogueRecordBean;
 import com.rainvice.sockettest_1.bean.InputMsgBean;
@@ -16,6 +17,8 @@ import com.rainvice.sockettest_1.protocol.MsgType;
 import com.rainvice.sockettest_1.protocol.RvRequestProtocol;
 import com.rainvice.sockettest_1.thread.SocketServerThread;
 import com.rainvice.sockettest_1.utils.DataUtil;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -55,6 +58,7 @@ public class SocketServerService extends Service {
 
 
                 }
+                EventBus.getDefault().post(new BusToChatEvent(Status.SUCCESS));
                 break;
             case Status.ERROR:
                 Toast.makeText(this, "接收消息失败", Toast.LENGTH_SHORT).show();
@@ -94,6 +98,7 @@ public class SocketServerService extends Service {
             dialogueRecordBean.getDialogs().add(dialogBean);
             messageMap.put(ip,dialogueRecordBean);
         }
+        dialogueRecordBean.setTimes(System.currentTimeMillis());
         Toast.makeText(this, "接收消息成功，内容是："+data, Toast.LENGTH_SHORT).show();
     }
 

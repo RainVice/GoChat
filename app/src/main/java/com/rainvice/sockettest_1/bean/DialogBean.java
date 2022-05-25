@@ -16,6 +16,9 @@ public class DialogBean {
         //消息内容
         private Object content;
 
+        //是否已读
+        private boolean isRead = false;
+
         public DialogBean() {
         }
 
@@ -24,6 +27,22 @@ public class DialogBean {
                 this.time = time;
                 this.dataType = dataType;
                 this.content = content;
+        }
+
+        public DialogBean(boolean isMine, String time, DataType dataType, Object content, boolean isRead) {
+                this.isMine = isMine;
+                this.time = time;
+                this.dataType = dataType;
+                this.content = content;
+                this.isRead = isRead;
+        }
+
+        public boolean isRead() {
+                return isRead;
+        }
+
+        public void setRead(boolean read) {
+                isRead = read;
         }
 
         public boolean isMine() {

@@ -24,6 +24,17 @@ public class DataUtil extends Application {
         return nameMap;
     }
 
+    public static String ip = IpScanUtil.getHostIp();
+
+
+    public static String getIp() {
+        return ip;
+    }
+
+    public static void setIp(String ip) {
+        DataUtil.ip = ip;
+    }
+
     public static void setNameMap(Map<String, String> nameMap) {
         DataUtil.nameMap = nameMap;
     }

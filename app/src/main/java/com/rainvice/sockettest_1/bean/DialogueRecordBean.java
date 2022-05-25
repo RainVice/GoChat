@@ -9,6 +9,8 @@ public class DialogueRecordBean {
 
     private String ip;
 
+    private long times;
+
     private List<DialogBean> dialogs = new ArrayList<>();
 
     public DialogueRecordBean() {
@@ -17,6 +19,14 @@ public class DialogueRecordBean {
     public DialogueRecordBean(String username, String ip) {
         this.username = username;
         this.ip = ip;
+    }
+
+    public long getTimes() {
+        return times;
+    }
+
+    public void setTimes(long times) {
+        this.times = times;
     }
 
     public String getUsername() {
