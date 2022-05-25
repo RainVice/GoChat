@@ -12,5 +12,9 @@ public class MsgType {
     public static final String GET_NAME = "get_name";
 
 
+    //图片消息
+    public static final String IMAGE = "image";
+
+
 
 }

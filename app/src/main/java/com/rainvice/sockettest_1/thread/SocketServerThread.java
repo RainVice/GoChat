@@ -5,6 +5,7 @@ import android.os.Message;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.rainvice.sockettest_1.bean.InputMsgBean;
 import com.rainvice.sockettest_1.constant.Status;
 import com.rainvice.sockettest_1.protocol.MsgType;
 import com.rainvice.sockettest_1.protocol.RvRequestProtocol;
@@ -51,7 +52,6 @@ public class SocketServerThread extends Thread{
                 //业务处理代码
                 new Thread(() -> {
                     try {
-                        LogUtil.d(TAG, "客户端:" + socket.getInetAddress().getHostAddress() + " 已连接到服务器");
                         //将消息发送到统一消息处理中心处理
                         messageManage(socket);
                     } catch (IOException e) {
@@ -71,6 +71,8 @@ public class SocketServerThread extends Thread{
     }
 
     private void messageManage(Socket socket) throws IOException {
+        String hostAddress = socket.getInetAddress().getHostAddress();
+        LogUtil.d(TAG, "客户端:" + hostAddress + " 已连接到服务器");
         socket.setSoTimeout(1000);
         BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         //读取客户端发送来的消息
@@ -94,17 +96,30 @@ public class SocketServerThread extends Thread{
                     BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
                     bw.write(s);
                     bw.flush();
+                    InputMsgBean inputMsgBean = new InputMsgBean(hostAddress, requestProtocol);
+                    Message message = new Message();
+                    message.what = Status.FINISH;
+                    message.obj = inputMsgBean;
+                    mHandler.sendMessage(message);
+
                 }else {
+                    InputMsgBean inputMsgBean = new InputMsgBean(hostAddress, requestProtocol);
                     Message message = new Message();
                     message.what = Status.SUCCESS;
-                    message.obj = requestProtocol;
+                    message.obj = inputMsgBean;
                     mHandler.sendMessage(message);
+
+                    RvResponseProtocol<String> responseProtocol = new RvResponseProtocol<>(MsgType.RECEIPT, RvResponseProtocol.OK,"接收到消息");
+                    String s = gson.toJson(responseProtocol);
+                    BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+                    bw.write(s);
+                    bw.flush();
                 }
             }else {
-                fail(socket, gson,"数据接收失败，转换 Bean 类失败");
+                fail(socket, gson,"数据接收失败: 转换 Bean 类失败");
             }
         }else {
-            fail(socket, gson,"数据接收失败,接收到空数据");
+            fail(socket, gson,"数据接收失败: 接收到空数据");
         }
     }
 

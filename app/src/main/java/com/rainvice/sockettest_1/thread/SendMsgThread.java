@@ -27,6 +27,7 @@ public class SendMsgThread extends Thread{
     private String mIp;
     private RvRequestProtocol<String> mMsg;
     private Socket mSocket;
+    private final Gson gson = new Gson();
 
     /**
      * 传入 ip ，直接构建 socket
@@ -59,7 +60,6 @@ public class SendMsgThread extends Thread{
             mOs = mSocket.getOutputStream();
 
             //将消息转换为 Json 字符串
-            Gson gson = new Gson();
             String outMsg = gson.toJson(mMsg);
 
             BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(mOs));
@@ -83,10 +83,25 @@ public class SendMsgThread extends Thread{
                 mHandler.sendMessage(message);
                 mIs.close();
             }
-            mOs.close();
-            mSocket.close();
         } catch (IOException e) {
             e.printStackTrace();
+            //将消息转换为 RvResponseProtocol
+            RvResponseProtocol<String> protocol = gson.fromJson("发送失败", RvResponseProtocol.class);
+            Message message = new Message();
+            message.what = Status.ERROR;
+            message.obj = protocol;
+            mHandler.sendMessage(message);
+        }finally {
+            try {
+                mOs.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            try {
+                mSocket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 

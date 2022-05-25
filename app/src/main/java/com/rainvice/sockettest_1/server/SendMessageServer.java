@@ -26,7 +26,10 @@ public class SendMessageServer {
         this.mHandler = new Handler(message -> {
             switch (message.what){
                 case Status.SUCCESS:
-                    callback.callback((RvResponseProtocol<String>) message.obj);
+                    callback.success((RvResponseProtocol<String>) message.obj);
+                    break;
+                case Status.ERROR:
+                    callback.error((RvResponseProtocol<String>) message.obj);
                     break;
             }
             return true;
@@ -38,7 +41,17 @@ public class SendMessageServer {
 
 
     public interface Callback{
-        void callback(RvResponseProtocol<String> result);
+        /**
+         * 发送对方已收到
+         * @param result
+         */
+        void success(RvResponseProtocol<String> result);
+
+        /**
+         * 发送失败或者对方掉线
+         * @param result
+         */
+        void error(RvResponseProtocol<String> result);
     }
 
 

@@ -100,7 +100,15 @@ public class IpScanUtil{
 
 
     public interface Callback {
+        /**
+         * 找到一个设备
+         * @param ip 找到的设备IP
+         */
         void onFind(String ip);
+
+        /**
+         * 完成扫描
+         */
         void onFinish();
     }
 }
