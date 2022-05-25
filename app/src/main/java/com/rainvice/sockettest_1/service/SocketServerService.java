@@ -68,9 +68,9 @@ public class SocketServerService extends Service {
 
     /**
      * 处理文字消息
-     * @param obj 消息信息
-     * @param protocol
-     * @param format
+     * @param ip 发送者的 ip
+     * @param protocol 消息内容
+     * @param format 时间
      */
     private void manageWord(String ip, RvRequestProtocol<String> protocol, String format) {
         //消息内容
