@@ -28,14 +28,14 @@ import java.util.Objects;
  * Scoket 线程
  */
 
-public class SocketServerThread extends Thread{
+public class TCPSocketServerThread extends Thread{
 
     private Handler mHandler;
 
-    public SocketServerThread(Handler handler){
+    public TCPSocketServerThread(Handler handler){
         this.mHandler = handler;
     }
-    public SocketServerThread(){
+    public TCPSocketServerThread(){
     }
 
 

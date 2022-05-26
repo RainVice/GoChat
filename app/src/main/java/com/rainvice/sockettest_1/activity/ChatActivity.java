@@ -120,7 +120,6 @@ public class ChatActivity extends AppCompatActivity {
                         int position = dialogs.size();
                         dialogs.add(dialogBean);
                         mRvAdapter.notifyItemRangeInserted(position,1);
-//                        mRvAdapter.notifyDataSetChanged();
                         mRecyclerView.scrollToPosition(position);
                     }
                     mDialogueRecordBean.setTimes(System.currentTimeMillis());
@@ -153,7 +152,6 @@ public class ChatActivity extends AppCompatActivity {
                     List<DialogBean> dialogs = mDialogueRecordBean.getDialogs();
                     int position = dialogs.size() - 1;
                     mRvAdapter.notifyItemRangeInserted(position,1);
-//                    mRvAdapter.notifyDataSetChanged();
                     mRecyclerView.scrollToPosition(position);
                 }
                 break;
@@ -179,6 +177,8 @@ public class ChatActivity extends AppCompatActivity {
             mRvAdapter = new RvAdapter<>(dialogs, R.layout.item_chat_list, (itemView, position, dialogBean) -> {
                 LinearLayout left = itemView.findViewById(R.id.left_message);
                 LinearLayout right = itemView.findViewById(R.id.right_message);
+                dialogBean.setRead(true);
+
                 if(dialogBean.isMine()){
                     left.setVisibility(View.GONE);
 

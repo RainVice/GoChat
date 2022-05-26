@@ -16,19 +16,11 @@ import com.rainvice.sockettest_1.constant.Status;
 import com.rainvice.sockettest_1.event.BusToMessageEvent;
 import com.rainvice.sockettest_1.protocol.MsgType;
 import com.rainvice.sockettest_1.protocol.RvRequestProtocol;
-import com.rainvice.sockettest_1.thread.SocketServerThread;
+import com.rainvice.sockettest_1.thread.TCPSocketServerThread;
 import com.rainvice.sockettest_1.utils.DataUtil;
 
 import org.greenrobot.eventbus.EventBus;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.net.Socket;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
@@ -40,7 +32,7 @@ public class SocketServerService extends Service {
     Handler mHandler = new Handler(message -> {
         int what = message.what;
         InputMsgBean obj = (InputMsgBean) message.obj;
-        switch (what){
+        switch (what) {
             case Status.SUCCESS:
                 //发送者发送的消息
                 RvRequestProtocol<String> protocol = obj.getProtocol();
@@ -54,8 +46,7 @@ public class SocketServerService extends Service {
                 if (type.equals(MsgType.MESSAGE)) {
                     //处理文字消息
                     manageWord(ip, protocol, format);
-                }else if (type.equals(MsgType.IMAGE)){
-
+                } else if (type.equals(MsgType.IMAGE)) {
 
 
                 }
@@ -73,9 +64,10 @@ public class SocketServerService extends Service {
 
     /**
      * 处理文字消息
-     * @param ip 发送者的 ip
+     *
+     * @param ip       发送者的 ip
      * @param protocol 消息内容
-     * @param format 时间
+     * @param format   时间
      */
     private void manageWord(String ip, RvRequestProtocol<String> protocol, String format) {
         //消息内容
@@ -84,24 +76,24 @@ public class SocketServerService extends Service {
         String username = DataUtil.getNameMap().get("ip");
         //保存消息
         Map<String, DialogueRecordBean> messageMap = DataUtil.getMessageMap();
-        DialogBean dialogBean = new DialogBean(false, format,DataType.WORD,data);
+        DialogBean dialogBean = new DialogBean(false, format, DataType.WORD, data);
         DialogueRecordBean dialogueRecordBean = messageMap.get(ip);
         //判断是否有消息记录
         if (dialogueRecordBean != null) {
             //添加消息
             dialogueRecordBean.setUsername(username);
             dialogueRecordBean.getDialogs().add(dialogBean);
-        }else {
+        } else {
             //添加消息记录
-            dialogueRecordBean = new DialogueRecordBean(username,ip);
+            dialogueRecordBean = new DialogueRecordBean(username, ip);
             dialogueRecordBean.setUsername(username);
             //添加消息
             dialogueRecordBean.getDialogs().add(dialogBean);
-            messageMap.put(ip,dialogueRecordBean);
+            messageMap.put(ip, dialogueRecordBean);
         }
         dialogueRecordBean.setTimes(System.currentTimeMillis());
         EventBus.getDefault().post(new BusToMessageEvent(Status.SUCCESS));
-        Toast.makeText(this, "接收消息成功，内容是："+data, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "接收消息成功，内容是：" + data, Toast.LENGTH_SHORT).show();
     }
 
 
@@ -123,12 +115,12 @@ public class SocketServerService extends Service {
 
     private void initSocketServer() {
         //启动服务
-        SocketServerThread socketServerThread = new SocketServerThread(mHandler);
+        TCPSocketServerThread socketServerThread = new TCPSocketServerThread(mHandler);
         socketServerThread.start();
     }
 
 
-    public class CommunicateBinder extends Binder{
+    public class CommunicateBinder extends Binder {
     }
 
 
