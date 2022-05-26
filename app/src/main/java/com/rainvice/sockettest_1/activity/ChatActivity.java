@@ -1,15 +1,16 @@
 package com.rainvice.sockettest_1.activity;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -44,7 +45,7 @@ import butterknife.ButterKnife;
 public class ChatActivity extends AppCompatActivity {
 
     @BindView(R.id.back)
-    ImageView mImageView;
+    LinearLayout mLinearLayout;
 
     @BindView(R.id.username)
     TextView mTextView;
@@ -65,6 +66,7 @@ public class ChatActivity extends AppCompatActivity {
     private RvAdapter<DialogBean> mRvAdapter;
 
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,7 +83,7 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void initListener() {
-        mImageView.setOnClickListener(view -> finish());
+        mLinearLayout.setOnClickListener(view -> finish());
 
         mButton.setOnClickListener(view -> {
             //发送消息
@@ -99,6 +101,7 @@ public class ChatActivity extends AppCompatActivity {
                  * 发送对方已收到
                  * @param result
                  */
+                @RequiresApi(api = Build.VERSION_CODES.N)
                 @Override
                 public void success(RvResponseProtocol<String> result) {
                     Toast.makeText(ChatActivity.this, "回复状态" + result.getStatus(), Toast.LENGTH_SHORT).show();
@@ -108,7 +111,7 @@ public class ChatActivity extends AppCompatActivity {
                     //判断是否有消息记录
                     if (mDialogueRecordBean == null){
                         //添加相关消息记录
-                        mDialogueRecordBean = new DialogueRecordBean(DataUtil.getUsername(),DataUtil.getIp());
+                        mDialogueRecordBean = new DialogueRecordBean(mUsername,mIp);
                         mDialogueRecordBean.getDialogs().add(dialogBean);
                         mMessageMap.put(mIp,mDialogueRecordBean);
                         initRecyclerView();
@@ -117,6 +120,7 @@ public class ChatActivity extends AppCompatActivity {
                         int position = dialogs.size();
                         dialogs.add(dialogBean);
                         mRvAdapter.notifyItemRangeInserted(position,1);
+//                        mRvAdapter.notifyDataSetChanged();
                         mRecyclerView.scrollToPosition(position);
                     }
                     mDialogueRecordBean.setTimes(System.currentTimeMillis());
@@ -134,6 +138,8 @@ public class ChatActivity extends AppCompatActivity {
     }
 
 
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Subscribe
     public void onEvent(BusToChatEvent event) {
         int status = event.getStatus();
@@ -147,6 +153,7 @@ public class ChatActivity extends AppCompatActivity {
                     List<DialogBean> dialogs = mDialogueRecordBean.getDialogs();
                     int position = dialogs.size() - 1;
                     mRvAdapter.notifyItemRangeInserted(position,1);
+//                    mRvAdapter.notifyDataSetChanged();
                     mRecyclerView.scrollToPosition(position);
                 }
                 break;
@@ -154,6 +161,7 @@ public class ChatActivity extends AppCompatActivity {
         }
     };
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     private void initView() {
         mTextView.setText(mUsername);
 
@@ -161,15 +169,16 @@ public class ChatActivity extends AppCompatActivity {
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     private void initRecyclerView() {
 
         if (mDialogueRecordBean != null){
 
             List<DialogBean> dialogs = mDialogueRecordBean.getDialogs();
+            dialogs.forEach(dialog -> dialog.setRead(true));
             mRvAdapter = new RvAdapter<>(dialogs, R.layout.item_chat_list, (itemView, position, dialogBean) -> {
                 LinearLayout left = itemView.findViewById(R.id.left_message);
                 LinearLayout right = itemView.findViewById(R.id.right_message);
-
                 if(dialogBean.isMine()){
                     left.setVisibility(View.GONE);
 

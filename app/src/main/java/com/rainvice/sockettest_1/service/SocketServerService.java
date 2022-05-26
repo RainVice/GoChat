@@ -13,6 +13,7 @@ import com.rainvice.sockettest_1.bean.DialogueRecordBean;
 import com.rainvice.sockettest_1.bean.InputMsgBean;
 import com.rainvice.sockettest_1.constant.DataType;
 import com.rainvice.sockettest_1.constant.Status;
+import com.rainvice.sockettest_1.event.BusToMessageEvent;
 import com.rainvice.sockettest_1.protocol.MsgType;
 import com.rainvice.sockettest_1.protocol.RvRequestProtocol;
 import com.rainvice.sockettest_1.thread.SocketServerThread;
@@ -99,6 +100,7 @@ public class SocketServerService extends Service {
             messageMap.put(ip,dialogueRecordBean);
         }
         dialogueRecordBean.setTimes(System.currentTimeMillis());
+        EventBus.getDefault().post(new BusToMessageEvent(Status.SUCCESS));
         Toast.makeText(this, "接收消息成功，内容是："+data, Toast.LENGTH_SHORT).show();
     }
 
@@ -127,33 +129,6 @@ public class SocketServerService extends Service {
 
 
     public class CommunicateBinder extends Binder{
-
-        public void sendMsg(){
-            new Thread(() -> {
-                try {
-                    Socket socket = new Socket("127.0.0.1", 6898);
-
-                    //构建IO
-                    InputStream is = socket.getInputStream();
-                    OutputStream os = socket.getOutputStream();
-
-                    BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(os));
-                    //向服务器端发送一条消息
-                    bw.write("测试客户端和服务器通信，服务器接收到消息返回到客户端\n");
-                    bw.flush();
-
-                    //读取服务器返回的消息
-                    BufferedReader br = new BufferedReader(new InputStreamReader(is));
-                    String mess = br.readLine();
-                    System.out.println("服务器："+mess);
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }).start();
-
-        }
-
     }
 
 

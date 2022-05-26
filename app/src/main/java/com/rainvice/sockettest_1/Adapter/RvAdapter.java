@@ -48,6 +48,17 @@ public class RvAdapter<T> extends RecyclerView.Adapter<RvAdapter.InnerHolder> {
         }
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        // 给每个ItemView指定不同的类型，这样在RecyclerView看来，这些ItemView全是不同的，不能复用
+        return position;
+    }
+
+    public void notifyData(List<T> list){
+        mList.clear();
+        mList.addAll(list);
+        notifyDataSetChanged();
+    }
 
     public interface Callback<T>{
         void callback(View itemView,int position,T t);
