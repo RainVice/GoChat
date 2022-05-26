@@ -4,6 +4,7 @@ import android.os.Handler;
 import android.os.Message;
 
 import com.rainvice.sockettest_1.constant.Status;
+import com.rainvice.sockettest_1.utils.DataUtil;
 import com.rainvice.sockettest_1.utils.LogUtil;
 
 import java.io.IOException;
@@ -14,7 +15,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class ScannerIpThread extends Thread{
+public class ScannerIpThread extends Thread {
 
 
     private final String TAG = this.getClass().getSimpleName();
@@ -25,7 +26,7 @@ public class ScannerIpThread extends Thread{
 
     private Handler mHandler;
 
-    public ScannerIpThread(String hostIp , String ips , Handler handler){
+    public ScannerIpThread(String hostIp, String ips, Handler handler) {
         this.mHostIp = hostIp;
         this.mIps = ips;
         mHandler = handler;
@@ -47,14 +48,14 @@ public class ScannerIpThread extends Thread{
             }
             executorService.execute(() -> {
                 Socket socket = new Socket();
-                InetSocketAddress inetSocketAddress = new InetSocketAddress(ip, 6898);
+                InetSocketAddress inetSocketAddress = new InetSocketAddress(ip, DataUtil.getPort());
 
                 //消息对象，给主线程发送消息
                 Message message = new Message();
                 message.obj = ip;
 
                 try {
-                    socket.connect(inetSocketAddress,1000);
+                    socket.connect(inetSocketAddress,200);
                     message.what = Status.SUCCESS;
                 } catch (IOException e) {
                     message.what = Status.ERROR;
@@ -75,7 +76,7 @@ public class ScannerIpThread extends Thread{
             latch.await();
             executorService.shutdown();
             //完成
-            LogUtil.d(TAG,"完成");
+            LogUtil.d(TAG, "完成");
             Message message = new Message();
             message.what = Status.FINISH;
             mHandler.sendMessage(message);

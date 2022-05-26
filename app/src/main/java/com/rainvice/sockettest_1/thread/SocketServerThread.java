@@ -21,6 +21,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
 import java.util.Objects;
 
 /**
@@ -45,7 +46,7 @@ public class SocketServerThread extends Thread{
     @Override
     public void run() {
         try {
-            ServerSocket serverSocket = new ServerSocket(6898);
+            ServerSocket serverSocket = new ServerSocket(DataUtil.getPort());
             Log.d(TAG, "onCreate: Socket服务已启动");
             while (isOpen) {
                 Socket socket = serverSocket.accept();
@@ -76,8 +77,13 @@ public class SocketServerThread extends Thread{
         socket.setSoTimeout(1000);
         BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         //读取客户端发送来的消息
-        String mess = br.readLine();
+        String mess = null;
         Gson gson = new Gson();
+        try {
+            mess = br.readLine();
+        }catch (SocketTimeoutException e){
+            fail(socket,gson,"读取数据失败");
+        }
         if (Objects.nonNull(mess)){
             RvRequestProtocol requestProtocol = null;
             LogUtil.d("接收到消息", mess);

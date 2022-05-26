@@ -8,6 +8,7 @@ import com.rainvice.sockettest_1.constant.Status;
 import com.rainvice.sockettest_1.protocol.MsgType;
 import com.rainvice.sockettest_1.protocol.RvRequestProtocol;
 import com.rainvice.sockettest_1.protocol.RvResponseProtocol;
+import com.rainvice.sockettest_1.utils.DataUtil;
 import com.rainvice.sockettest_1.utils.LogUtil;
 
 import java.io.BufferedReader;
@@ -55,7 +56,7 @@ public class SendMsgThread extends Thread{
     @Override
     public void run() {
         try {
-            mSocket = new Socket(mIp, 6898);
+            mSocket = new Socket(mIp, DataUtil.getPort());
             mSocket.setSoTimeout(1000);
             //构建IO
             mOs = mSocket.getOutputStream();

@@ -10,6 +10,7 @@ import androidx.annotation.RequiresApi;
 
 import com.rainvice.sockettest_1.constant.Status;
 import com.rainvice.sockettest_1.thread.ScannerIpThread;
+import com.rainvice.sockettest_1.thread.ScannerIpThreadB;
 
 import java.io.IOException;
 import java.net.Inet4Address;
@@ -55,8 +56,8 @@ public class IpScanUtil{
         mCallback = callback;
 
         String hostIp = getHostIp();
+//        new ScannerIpThread(hostIp,getNetworkSegment(hostIp),mHandler).start();
         new ScannerIpThread(hostIp,getNetworkSegment(hostIp),mHandler).start();
-
     }
 
 
@@ -96,6 +97,17 @@ public class IpScanUtil{
     public static String getNetworkSegment(String ip) {
         int startIndex = ip.lastIndexOf(".");
         return ip.substring(0, startIndex + 1);
+    }
+    /**
+     * 根据B类ip地址获取网段
+     *
+     * @param ip
+     * @return
+     */
+    public static String getNetworkSegmentB(String ip) {
+        String[] split = ip.split("\\.");
+        String ipB = split[0] + "." + split[1] + ".";
+        return ipB;
     }
 
 

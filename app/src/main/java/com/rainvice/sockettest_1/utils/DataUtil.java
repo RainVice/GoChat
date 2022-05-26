@@ -13,12 +13,23 @@ public class DataUtil extends Application {
 
     private static Context context;
 
+    private static int port = 6898;
+
     //本机的用户名
     private static String username = "匿名用户";
     //消息记录
     private static Map<String, DialogueRecordBean> messageMap = new HashMap<>();
 
     private static Map<String,String> nameMap = new HashMap<>();
+
+
+    public static int getPort() {
+        return port;
+    }
+
+    public static void setPort(int port) {
+        DataUtil.port = port;
+    }
 
     public static Map<String, String> getNameMap() {
         return nameMap;
