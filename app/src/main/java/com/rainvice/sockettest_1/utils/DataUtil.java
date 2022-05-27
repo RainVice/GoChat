@@ -13,7 +13,9 @@ public class DataUtil extends Application {
 
     private static Context context;
 
-    private static int port = 6898;
+    private static int TCPPort = 6898;
+
+    private static int UDPPort = 6899;
 
     //本机的用户名
     private static String username = "匿名用户";
@@ -22,13 +24,20 @@ public class DataUtil extends Application {
 
     private static Map<String,String> nameMap = new HashMap<>();
 
-
-    public static int getPort() {
-        return port;
+    public static int getUDPPort() {
+        return UDPPort;
     }
 
-    public static void setPort(int port) {
-        DataUtil.port = port;
+    public static void setUDPPort(int UDPPort) {
+        DataUtil.UDPPort = UDPPort;
+    }
+
+    public static int getTCPPort() {
+        return TCPPort;
+    }
+
+    public static void setTCPPort(int TCPPort) {
+        DataUtil.TCPPort = TCPPort;
     }
 
     public static Map<String, String> getNameMap() {

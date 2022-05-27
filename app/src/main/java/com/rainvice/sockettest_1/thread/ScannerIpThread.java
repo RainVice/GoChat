@@ -10,7 +10,6 @@ import com.rainvice.sockettest_1.utils.LogUtil;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -48,7 +47,7 @@ public class ScannerIpThread extends Thread {
             }
             executorService.execute(() -> {
                 Socket socket = new Socket();
-                InetSocketAddress inetSocketAddress = new InetSocketAddress(ip, DataUtil.getPort());
+                InetSocketAddress inetSocketAddress = new InetSocketAddress(ip, DataUtil.getTCPPort());
 
                 //消息对象，给主线程发送消息
                 Message message = new Message();

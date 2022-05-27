@@ -11,7 +11,6 @@ import com.rainvice.sockettest_1.protocol.MsgType;
 import com.rainvice.sockettest_1.protocol.RvRequestProtocol;
 import com.rainvice.sockettest_1.protocol.RvResponseProtocol;
 import com.rainvice.sockettest_1.utils.DataUtil;
-import com.rainvice.sockettest_1.utils.IpScanUtil;
 import com.rainvice.sockettest_1.utils.LogUtil;
 
 import java.io.BufferedReader;
@@ -46,7 +45,7 @@ public class TCPSocketServerThread extends Thread{
     @Override
     public void run() {
         try {
-            ServerSocket serverSocket = new ServerSocket(DataUtil.getPort());
+            ServerSocket serverSocket = new ServerSocket(DataUtil.getTCPPort());
             Log.d(TAG, "onCreate: Socket服务已启动");
             while (isOpen) {
                 Socket socket = serverSocket.accept();

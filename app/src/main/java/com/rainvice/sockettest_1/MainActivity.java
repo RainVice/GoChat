@@ -17,6 +17,7 @@ import com.rainvice.sockettest_1.fragment.ContactFragment;
 import com.rainvice.sockettest_1.fragment.MessageFragment;
 import com.rainvice.sockettest_1.fragment.NearbyFragment;
 import com.rainvice.sockettest_1.utils.DataUtil;
+import com.rainvice.sockettest_1.utils.IpScanUtil;
 
 import java.util.ArrayList;
 
@@ -41,6 +42,8 @@ public class MainActivity extends AppCompatActivity {
         //设置设备名称
         String bluetoothName = Settings.Secure.getString(getContentResolver(), "bluetooth_name");
         DataUtil.setUsername(bluetoothName);
+        String hostIp = IpScanUtil.getHostIp();
+        DataUtil.setIp(hostIp);
 
 
         //将三个 fragment 添加到 ViewPager2 中

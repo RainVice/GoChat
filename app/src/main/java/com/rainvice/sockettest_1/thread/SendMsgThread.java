@@ -56,7 +56,7 @@ public class SendMsgThread extends Thread{
     @Override
     public void run() {
         try {
-            mSocket = new Socket(mIp, DataUtil.getPort());
+            mSocket = new Socket(mIp, DataUtil.getTCPPort());
             mSocket.setSoTimeout(1000);
             //构建IO
             mOs = mSocket.getOutputStream();

@@ -48,9 +48,9 @@ public class ScannerIpThreadB extends Thread{
                     continue;
                 }
                 executorService.execute(() -> {
-                    LogUtil.d("扫描到",ip);
+//                    LogUtil.d("扫描到",ip);
                     Socket socket = new Socket();
-                    InetSocketAddress inetSocketAddress = new InetSocketAddress(ip, DataUtil.getPort());
+                    InetSocketAddress inetSocketAddress = new InetSocketAddress(ip, DataUtil.getTCPPort());
 
                     //消息对象，给主线程发送消息
                     Message message = new Message();
