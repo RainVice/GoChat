@@ -6,35 +6,65 @@
     android:orientation="vertical"
     tools:context=".fragment.MessageFragment">
 
+
     <LinearLayout
-        android:gravity="center_vertical"
-        android:paddingLeft="15dp"
-        android:background="@color/salmon"
         android:layout_width="match_parent"
-        android:layout_height="50dp">
+        android:layout_height="50dp"
+        android:background="@color/salmon"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="15dp">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
             <ImageView
                 android:layout_width="23dp"
                 android:layout_height="23dp"
-                android:src="@drawable/ic_main_message_200"/>
+                android:src="@drawable/ic_main_message_200" />
+
             <TextView
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:layout_marginLeft="7dp"
-                android:text="消息"
-                android:textColor="@color/white"
+                android:textStyle="bold"
                 android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="7dp"
+                android:text="消息"
+                android:textColor="@color/white" />
+
+            <LinearLayout
+                android:layout_weight="1"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"/>
+
+            <ImageView
+                android:id="@+id/add"
+                android:layout_width="23dp"
+                android:layout_height="23dp"
+                android:src="@drawable/ic_messge_add_200" />
+
         </LinearLayout>
+
+
     </LinearLayout>
+
+
+
+    <TextView
+        android:id="@+id/ip"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_margin="10dp"
+        android:text="消息"
+        android:textSize="10dp" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/message_recyclerview"
-        android:layout_margin="10dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="10dp" />
 
 
 </LinearLayout>

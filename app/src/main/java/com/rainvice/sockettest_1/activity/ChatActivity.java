@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.NotificationManager;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -23,11 +24,13 @@ import com.rainvice.sockettest_1.bean.DialogBean;
 import com.rainvice.sockettest_1.bean.DialogueRecordBean;
 import com.rainvice.sockettest_1.constant.DataType;
 import com.rainvice.sockettest_1.constant.IntentConstant;
+import com.rainvice.sockettest_1.event.BusToNearbyEvent;
 import com.rainvice.sockettest_1.protocol.MsgType;
 import com.rainvice.sockettest_1.protocol.RvRequestProtocol;
 import com.rainvice.sockettest_1.protocol.RvResponseProtocol;
 import com.rainvice.sockettest_1.server.SendMessageServer;
 import com.rainvice.sockettest_1.utils.DataUtil;
+import com.rainvice.sockettest_1.utils.IpUtil;
 import com.rainvice.sockettest_1.utils.LogUtil;
 
 import org.greenrobot.eventbus.EventBus;
@@ -104,7 +107,8 @@ public class ChatActivity extends AppCompatActivity {
                 @RequiresApi(api = Build.VERSION_CODES.N)
                 @Override
                 public void success(RvResponseProtocol<String> result) {
-                    Toast.makeText(ChatActivity.this, "回复状态" + result.getStatus(), Toast.LENGTH_SHORT).show();
+                    mTextView.setText(mUsername);
+                    //Toast.makeText(ChatActivity.this, "回复状态" + result.getStatus(), Toast.LENGTH_SHORT).show();
                     //获取消息记录
                     String format = new SimpleDateFormat("HH:mm:ss").format(new Date());
                     DialogBean dialogBean = new DialogBean(true, format, DataType.WORD, msg,true);
@@ -130,13 +134,26 @@ public class ChatActivity extends AppCompatActivity {
                  */
                 @Override
                 public void error(RvResponseProtocol<String> result) {
+                    mTextView.setText(mUsername + "(对方可能已掉线)");
                     Toast.makeText(ChatActivity.this, "发送失败或者对方掉线", Toast.LENGTH_SHORT).show();
                 }
             });
         }
     }
 
-
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    @Subscribe
+    public void onEvent(BusToNearbyEvent event) {
+        if (event.getStatus() == Status.SUCCESS) {
+            String s = DataUtil.getNameMap().get(mIp);
+            if (s == null){
+                mTextView.setText(mUsername + "(对方可能已掉线)");
+            }else {
+                mUsername = s;
+                mTextView.setText(mUsername);
+            }
+        }
+    }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Subscribe

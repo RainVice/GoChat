@@ -21,6 +21,7 @@
                 android:layout_height="23dp"
                 android:src="@drawable/ic_main_contact_200"/>
             <TextView
+                android:textStyle="bold"
                 android:layout_gravity="center"
                 android:gravity="center"
                 android:layout_marginLeft="7dp"

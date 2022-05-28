@@ -18,10 +18,14 @@
         <entry key="..\:/MyProjects/Android Project/Socket/SocketTest_1/app/src/main/res/drawable/ic_main_message_200.xml" value="0.3065" />
         <entry key="..\:/MyProjects/Android Project/Socket/SocketTest_1/app/src/main/res/drawable/ic_main_nearby.xml" value="0.3065" />
         <entry key="..\:/MyProjects/Android Project/Socket/SocketTest_1/app/src/main/res/drawable/ic_nearby_refresh_200.xml" value="0.296" />
+        <entry key="..\:/MyProjects/Android Project/Socket/SocketTest_1/app/src/main/res/layout/activity_chat.xml" value="0.4358974358974359" />
         <entry key="..\:/MyProjects/Android Project/Socket/SocketTest_1/app/src/main/res/layout/activity_main.xml" value="0.33" />
+        <entry key="..\:/MyProjects/Android Project/Socket/SocketTest_1/app/src/main/res/layout/activity_notification.xml" value="0.4358974358974359" />
+        <entry key="..\:/MyProjects/Android Project/Socket/SocketTest_1/app/src/main/res/layout/dialog_add_message.xml" value="0.43504273504273505" />
         <entry key="..\:/MyProjects/Android Project/Socket/SocketTest_1/app/src/main/res/layout/fragment_contact.xml" value="0.4358974358974359" />
         <entry key="..\:/MyProjects/Android Project/Socket/SocketTest_1/app/src/main/res/layout/fragment_message.xml" value="0.4239316239316239" />
         <entry key="..\:/MyProjects/Android Project/Socket/SocketTest_1/app/src/main/res/layout/fragment_nearby.xml" value="0.4358974358974359" />
+        <entry key="..\:/MyProjects/Android Project/Socket/SocketTest_1/app/src/main/res/layout/item_chat_list.xml" value="0.21303258145363407" />
         <entry key="..\:/MyProjects/Android Project/Socket/SocketTest_1/app/src/main/res/layout/item_nearby_list.xml" value="0.43504273504273505" />
         <entry key="..\:/MyProjects/Android Project/Socket/SocketTest_1/app/src/main/res/menu/b_n_v_menu.xml" value="0.33" />
       </map>

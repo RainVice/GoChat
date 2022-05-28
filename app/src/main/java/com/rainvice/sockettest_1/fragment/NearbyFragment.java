@@ -2,10 +2,12 @@ package com.rainvice.sockettest_1.fragment;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -24,16 +26,21 @@ import com.rainvice.sockettest_1.R;
 import com.rainvice.sockettest_1.activity.ChatActivity;
 import com.rainvice.sockettest_1.bean.NearbyBean;
 import com.rainvice.sockettest_1.constant.IntentConstant;
+import com.rainvice.sockettest_1.event.BusToNearbyEvent;
 import com.rainvice.sockettest_1.protocol.MsgType;
 import com.rainvice.sockettest_1.protocol.RvRequestProtocol;
 import com.rainvice.sockettest_1.protocol.RvResponseProtocol;
 import com.rainvice.sockettest_1.server.SendMessageServer;
 import com.rainvice.sockettest_1.utils.DataUtil;
-import com.rainvice.sockettest_1.utils.IpScanUtil;
+import com.rainvice.sockettest_1.utils.IpUtil;
 import com.rainvice.sockettest_1.utils.LogUtil;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @SuppressLint("NonConstantResourceId")
 public class NearbyFragment extends Fragment {
@@ -45,9 +52,10 @@ public class NearbyFragment extends Fragment {
 
     private final String TAG = this.getClass().getSimpleName();
     private final List<NearbyBean> ips = new ArrayList<>();
-    private IpScanUtil mIpScanUtil;
+    private IpUtil mIpUtil;
     private View.OnClickListener mScanIp;
     private View.OnClickListener mDisScanIp;
+    private RvAdapter<NearbyBean> mAdapter;
 
 
     @Override
@@ -61,15 +69,17 @@ public class NearbyFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_nearby, container, false);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        EventBus.getDefault().register(this);
         initView(view);
 
         mTextView.setText(DataUtil.getUsername() + "(点击设置用户名)");
 
         initListener();
-        mIpScanUtil = new IpScanUtil();
-        scanNearby(mIpScanUtil);
+        mIpUtil = new IpUtil();
+        scanNearby(mIpUtil);
     }
 
     /**
@@ -79,8 +89,7 @@ public class NearbyFragment extends Fragment {
         mScanIp = view -> {
             Toast.makeText(getContext(), "开始扫描", Toast.LENGTH_SHORT).show();
             mImageView.setOnClickListener(mDisScanIp);
-            ips.clear();
-            scanNearby(mIpScanUtil);
+            scanNearby(mIpUtil);
         };
 
         mTextView.setOnClickListener(view -> {
@@ -90,6 +99,9 @@ public class NearbyFragment extends Fragment {
                     .setNegativeButton("取消", null);
             builder.setPositiveButton("确定", (dialog, which) -> {
                 String s = inputServer.getText().toString();
+                if (s.equals("")){
+                    Toast.makeText(getContext(), "用户名不能为空", Toast.LENGTH_SHORT).show();
+                }
                 mTextView.setText(s);
                 DataUtil.setUsername(s);
             });
@@ -102,10 +114,11 @@ public class NearbyFragment extends Fragment {
 
     /**
      * 扫描附近设备
-     * @param ipScanUtil
+     * @param ipUtil
      */
-    private void scanNearby(@NonNull IpScanUtil ipScanUtil) {
-        ipScanUtil.scanIp(new IpScanUtil.Callback() {
+    private void scanNearby(@NonNull IpUtil ipUtil) {
+        ips.clear();
+        ipUtil.scanIp(new IpUtil.Callback() {
             /**
              * 找到一个设备
              * @param ip 找到的设备IP
@@ -114,8 +127,6 @@ public class NearbyFragment extends Fragment {
             public void onFind(String ip) {
                 LogUtil.d(TAG,"成功连接：" + ip);
                 //发送消息，获取名称
-                NearbyBean nearbyBean = new NearbyBean(ip);
-                ips.add(nearbyBean);
                 RvRequestProtocol<String> protocol = new RvRequestProtocol<>(MsgType.GET_NAME,"我想要名称");
                 SendMessageServer sendMessageServer = new SendMessageServer(ip, protocol);
                 sendMessageServer.sendMsg(new SendMessageServer.Callback() {
@@ -127,7 +138,6 @@ public class NearbyFragment extends Fragment {
                         }
                         //设置保存用户名
                         DataUtil.getNameMap().put(ip,data);
-                        nearbyBean.setName(data);
                         LogUtil.d(TAG, data);
                     }
 
@@ -142,10 +152,15 @@ public class NearbyFragment extends Fragment {
             /**
              * 完成扫描
              */
+            @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onFinish() {
                 Toast.makeText(getContext(), "扫描完成", Toast.LENGTH_SHORT).show();
                 mImageView.setOnClickListener(mScanIp);
+                Map<String, String> nameMap = DataUtil.getNameMap();
+                nameMap.forEach((key, val) -> {
+                    ips.add(new NearbyBean(key,val));
+                });
                 //设置列表
                 setRecyclerView();
             }
@@ -157,26 +172,30 @@ public class NearbyFragment extends Fragment {
      */
     private void setRecyclerView() {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        RvAdapter<NearbyBean> adapter = new RvAdapter<>(ips, R.layout.item_nearby_list, new RvAdapter.Callback<NearbyBean>() {
-            @Override
-            public void callback(View itemView, int position, NearbyBean nearbyBean) {
-                TextView ipView = itemView.findViewById(R.id.ip);
-                TextView usernameView = itemView.findViewById(R.id.username);
-                String ip = nearbyBean.getIp();
-                ipView.setText(ip);
-                String username = nearbyBean.getName();
-                usernameView.setText(username);
+        if (mAdapter == null){
+            mAdapter = new RvAdapter<>(ips, R.layout.item_nearby_list, new RvAdapter.Callback<NearbyBean>() {
+                @Override
+                public void callback(View itemView, int position, NearbyBean nearbyBean) {
+                    TextView ipView = itemView.findViewById(R.id.ip);
+                    TextView usernameView = itemView.findViewById(R.id.username);
+                    String ip = nearbyBean.getIp();
+                    ipView.setText(ip);
+                    String username = nearbyBean.getName();
+                    usernameView.setText(username);
 
-                itemView.setOnClickListener(view -> {
-                    Intent intent = new Intent(getContext(), ChatActivity.class);
-                    intent.putExtra(IntentConstant.IP, ip);
-                    intent.putExtra(IntentConstant.USERNAME,username);
-                    startActivity(intent);
-                });
+                    itemView.setOnClickListener(view -> {
+                        Intent intent = new Intent(getContext(), ChatActivity.class);
+                        intent.putExtra(IntentConstant.IP, ip);
+                        intent.putExtra(IntentConstant.USERNAME,username);
+                        startActivity(intent);
+                    });
 
-            }
-        });
-        mRecyclerView.setAdapter(adapter);
+                }
+            });
+            mRecyclerView.setAdapter(mAdapter);
+        }else {
+            mAdapter.notifyDataSetChanged();
+        }
     }
 
     /**
@@ -189,6 +208,37 @@ public class NearbyFragment extends Fragment {
         mImageView = view.findViewById(R.id.refresh);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (mAdapter != null){
+            ips.clear();
+            Map<String, String> nameMap = DataUtil.getNameMap();
+            nameMap.forEach((key, val) -> {
+                ips.add(new NearbyBean(key, val));
+            });
+            //设置列表
+            mAdapter.notifyData(ips);
+        }
+    }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    @Subscribe
+    public void onEvent(BusToNearbyEvent event){
+        if (mAdapter != null){
+            ips.clear();
+            Map<String, String> nameMap = DataUtil.getNameMap();
+            nameMap.forEach((key, val) -> ips.add(new NearbyBean(key, val)));
+            //设置列表
+            mAdapter.notifyData(ips);
+        }
+    }
 
 }

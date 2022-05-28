@@ -44,7 +44,7 @@ public class DataUtil extends Application {
         return nameMap;
     }
 
-    public static String ip = IpScanUtil.getHostIp();
+    public static String ip = IpUtil.getHostIp();
 
 
     public static String getIp() {

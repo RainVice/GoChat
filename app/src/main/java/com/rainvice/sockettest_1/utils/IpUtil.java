@@ -1,32 +1,20 @@
 package com.rainvice.sockettest_1.utils;
 
-import android.os.Build;
+import android.content.Intent;
 import android.os.Handler;
-import android.os.Message;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 
 import com.rainvice.sockettest_1.constant.Status;
 import com.rainvice.sockettest_1.thread.ScannerIpThread;
-import com.rainvice.sockettest_1.thread.ScannerIpThreadB;
 
-import java.io.IOException;
 import java.net.Inet4Address;
 import java.net.InetAddress;
-import java.net.InetSocketAddress;
 import java.net.NetworkInterface;
-import java.net.Socket;
 import java.util.Enumeration;
-import java.util.HashSet;
 import java.util.Objects;
-import java.util.Set;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
-public class IpScanUtil{
+public class IpUtil {
 
     private final String TAG = this.getClass().getSimpleName();
 
@@ -97,17 +85,19 @@ public class IpScanUtil{
         int startIndex = ip.lastIndexOf(".");
         return ip.substring(0, startIndex + 1);
     }
+
+
     /**
-     * 根据B类ip地址获取网段
-     *
+     * 将 ip 字符串转为 int 值 id
      * @param ip
      * @return
      */
-    public static String getNetworkSegmentB(String ip) {
+    public static int getIp(@NonNull String ip){
         String[] split = ip.split("\\.");
-        String ipB = split[0] + "." + split[1] + ".";
-        return ipB;
+        String s = split[2] + split[3];
+        return Integer.parseInt(s);
     }
+
 
 
     public interface Callback {

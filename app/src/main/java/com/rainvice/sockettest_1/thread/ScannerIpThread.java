@@ -19,11 +19,11 @@ public class ScannerIpThread extends Thread {
 
     private final String TAG = this.getClass().getSimpleName();
 
-    private String mHostIp;
-    private String mIps;
+    private final String mHostIp;
+    private final String mIps;
 
 
-    private Handler mHandler;
+    private final Handler mHandler;
 
     public ScannerIpThread(String hostIp, String ips, Handler handler) {
         this.mHostIp = hostIp;
@@ -62,11 +62,11 @@ public class ScannerIpThread extends Thread {
                     mHandler.sendMessage(message);
                     try {
                         socket.close();
-                        latch.countDown();
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                 }
+                latch.countDown();
 
             });
         }

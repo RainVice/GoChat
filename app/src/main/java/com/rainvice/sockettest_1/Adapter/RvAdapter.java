@@ -15,7 +15,7 @@ public class RvAdapter<T> extends RecyclerView.Adapter<RvAdapter.InnerHolder> {
 
 
 
-    private final List<T> mList;
+    private List<T> mList;
     private final int mLayoutId;
     private final Callback<T> mCallback;
 
@@ -55,8 +55,7 @@ public class RvAdapter<T> extends RecyclerView.Adapter<RvAdapter.InnerHolder> {
     }
 
     public void notifyData(List<T> list){
-        mList.clear();
-        mList.addAll(list);
+        this.mList = list;
         notifyDataSetChanged();
     }
 
