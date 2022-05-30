@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.rainvice.sockettest_1">
+    package="com.rainvice.gochat">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -19,27 +19,27 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31" >
         <activity
-            android:name=".activity.PhotoViewActivity"
+            android:name="com.rainvice.gochat.activity.PhotoViewActivity"
             android:exported="false" />
 
         <service
-            android:name=".service.UDPSocketService"
+            android:name="com.rainvice.gochat.service.UDPSocketService"
             android:enabled="true"
             android:exported="true"
             android:priority="1000" />
 
         <activity
-            android:name=".activity.ChatActivity"
+            android:name="com.rainvice.gochat.activity.ChatActivity"
             android:exported="false" />
 
         <service
-            android:name=".service.SocketServerService"
+            android:name="com.rainvice.gochat.service.SocketServerService"
             android:enabled="true"
             android:exported="true"
             android:priority="1000" />
 
         <activity
-            android:name=".MainActivity"
+            android:name="com.rainvice.gochat.MainActivity"
             android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

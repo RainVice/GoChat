@@ -7,7 +7,7 @@
     android:orientation="vertical"
     tools:context=".activity.PhotoViewActivity">
 
-    <com.rainvice.sockettest_1.view.PhotoView
+    <com.rainvice.gochat.view.PhotoView
         android:background="@color/black"
         android:id="@+id/photo"
         android:layout_width="match_parent"
