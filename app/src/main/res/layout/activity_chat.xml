@@ -60,11 +60,19 @@
             android:layout_height="match_parent"/>
 
         <Button
+            android:visibility="gone"
             android:layout_marginStart="10dp"
             android:id="@+id/send"
             android:background="@drawable/bg_edit"
             android:text="发送"
             android:layout_width="80dp"
+            android:layout_height="40dp"/>
+
+        <ImageView
+            android:id="@+id/image"
+            android:layout_marginStart="10dp"
+            android:src="@drawable/ic_chat_image_200"
+            android:layout_width="40dp"
             android:layout_height="40dp"/>
 
     </LinearLayout>
