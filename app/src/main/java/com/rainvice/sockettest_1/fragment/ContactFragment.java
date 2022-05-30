@@ -21,6 +21,7 @@ import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.loader.content.CursorLoader;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -59,18 +60,25 @@ import com.rainvice.sockettest_1.server.SendMessageServer;
 import com.rainvice.sockettest_1.utils.DataUtil;
 import com.rainvice.sockettest_1.utils.LogUtil;
 import com.rainvice.sockettest_1.utils.StrZipUtil;
+import com.rainvice.sockettest_1.utils.compress.CompressHelper;
+import com.rainvice.sockettest_1.utils.compress.FileUtil;
+
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
 
 public class ContactFragment extends Fragment {
 
@@ -109,13 +117,13 @@ public class ContactFragment extends Fragment {
                 Intent data = result.getData();
                 assert data != null;
                 Uri uri = data.getData();
-                ContentResolver resolver = getContext().getContentResolver();
-                Bitmap bitmap = null;
                 try {
-                    //1.将相册返回的uri转为Bitmap
-                    bitmap = MediaStore.Images.Media.getBitmap(resolver, uri);
+//                    Bitmap bitmap= MediaStore.Images.Media.getBitmap(getContext().getContentResolver(), uri);
 
-
+                    File file = FileUtil.getTempFile(getContext(), uri);
+                    Bitmap bitmap = new CompressHelper.Builder(getContext())
+                            .setQuality(1)
+                            .build().compressToBitmap(file);
 
                     //2.压缩图片,第二个入参表示图片压缩率，如果是100就表示不压缩
                     ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -128,6 +136,7 @@ public class ContactFragment extends Fragment {
 //                    byte[] decodedString = Base64.decode(s, Base64.DEFAULT);
 //                    Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
                     sendMessage(DataType.IMAGE, s, bitmap);
+
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -232,6 +241,12 @@ public class ContactFragment extends Fragment {
         });
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    @Override
+    public void onResume() {
+        super.onResume();
+        initRecyclerView();
+    }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     private void initRecyclerView() {

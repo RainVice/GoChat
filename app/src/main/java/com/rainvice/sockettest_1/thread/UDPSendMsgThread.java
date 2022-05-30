@@ -1,5 +1,6 @@
 package com.rainvice.sockettest_1.thread;
 
+import android.graphics.Bitmap;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
@@ -43,6 +44,7 @@ public class UDPSendMsgThread extends Thread {
             InetAddress adds = InetAddress.getByName("255.255.255.255");
             DatagramSocket ds = new DatagramSocket();
             String json = gson.toJson(mMsg);
+
 
 
             byte[] bytes = StrZipUtil.compress(json);

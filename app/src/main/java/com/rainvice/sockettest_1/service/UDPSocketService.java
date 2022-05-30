@@ -176,7 +176,7 @@ public class UDPSocketService extends Service {
         byte[] decodedString = Base64.decode(message, Base64.DEFAULT);
         Bitmap bitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
         //创建消息
-        DialogBean dialogBean = new DialogBean(false, time + groupChatBean.getUsername() + "，" + DataUtil.getIp() , DataType.IMAGE,bitmap);
+        DialogBean dialogBean = new DialogBean(false, time +"，"+ groupChatBean.getUsername() + "，" + DataUtil.getIp() , DataType.IMAGE,bitmap);
         saveDialog(MsgType.GROUP_MESSAGE, dialogBean);
 
     }
