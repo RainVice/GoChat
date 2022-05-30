@@ -21,7 +21,7 @@ import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.util.Objects;
 
-public class SendMsgThread extends Thread{
+public class TCPSendMsgThread extends Thread{
 
     private Handler mHandler;
     private InputStream mIs;
@@ -36,7 +36,7 @@ public class SendMsgThread extends Thread{
      * @param ip IP地址
      * @param msg 发送的消息
      */
-    public SendMsgThread(String ip, RvRequestProtocol<String> msg){
+    public TCPSendMsgThread(String ip, RvRequestProtocol<String> msg){
         this.mIp = ip;
         this.mMsg = msg;
     }
@@ -47,7 +47,7 @@ public class SendMsgThread extends Thread{
      * @param msg 发送的消息
      * @param handler Handler，如果需要发送消息以后返回数据，那么就可以传入此对象
      */
-    public SendMsgThread(String ip, RvRequestProtocol<String> msg, Handler handler){
+    public TCPSendMsgThread(String ip, RvRequestProtocol<String> msg, Handler handler){
         this.mIp = ip;
         this.mMsg = msg;
         this.mHandler = handler;

@@ -129,7 +129,7 @@ public class NearbyFragment extends Fragment {
                 //发送消息，获取名称
                 RvRequestProtocol<String> protocol = new RvRequestProtocol<>(MsgType.GET_NAME,"我想要名称");
                 SendMessageServer sendMessageServer = new SendMessageServer(ip, protocol);
-                sendMessageServer.sendMsg(new SendMessageServer.Callback() {
+                sendMessageServer.sendTCPMsg(new SendMessageServer.Callback() {
                     @Override
                     public void success(RvResponseProtocol<String> result) {
                         String data = result.getData();

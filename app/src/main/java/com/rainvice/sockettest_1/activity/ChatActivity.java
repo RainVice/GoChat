@@ -1,11 +1,8 @@
 package com.rainvice.sockettest_1.activity;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -15,14 +12,17 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -35,7 +35,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
 import com.rainvice.sockettest_1.Adapter.RvAdapter;
 import com.rainvice.sockettest_1.R;
 import com.rainvice.sockettest_1.constant.Status;
@@ -56,6 +55,8 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -115,7 +116,7 @@ public class ChatActivity extends AppCompatActivity {
 
                     //2.压缩图片,第二个入参表示图片压缩率，如果是100就表示不压缩
                     ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                    mBitmap.compress(Bitmap.CompressFormat.JPEG, 40, bos);
+                    mBitmap.compress(Bitmap.CompressFormat.JPEG, 100, bos);
 
                     //3.将压缩后的图片进行base64编码
                     byte[] bytes = bos.toByteArray();
@@ -231,7 +232,7 @@ public class ChatActivity extends AppCompatActivity {
                 requestProtocol = new RvRequestProtocol<>(MsgType.IMAGE, msg);
             }
             SendMessageServer sendMessageServer = new SendMessageServer(mIp, requestProtocol);
-            sendMessageServer.sendMsg(new SendMessageServer.Callback() {
+            sendMessageServer.sendTCPMsg(new SendMessageServer.Callback() {
                 /**
                  * 发送对方已收到
                  * @param result
@@ -347,11 +348,33 @@ public class ChatActivity extends AppCompatActivity {
                         if (dialogBean.getDataType() == DataType.WORD){
                             imageView.setVisibility(View.GONE);
                             time.setText(dialogBean.getTime());
-                            content.setText((String) dialogBean.getContent());
+                            String text = (String) dialogBean.getContent();
+                            content.setText(text);
+                            content.setOnLongClickListener(view -> {
+                                ClipboardManager clipboardManager = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                                ClipData clipData = ClipData.newPlainText(text, text);
+                                clipboardManager.setPrimaryClip(clipData);
+                                Toast.makeText(ChatActivity.this, mIp, Toast.LENGTH_SHORT).show();
+                                return true;
+                            });
                         }else {
                             content.setVisibility(View.GONE);
                             time.setText(dialogBean.getTime());
-                            imageView.setImageBitmap((Bitmap) dialogBean.getContent());
+                            Bitmap bit = (Bitmap) dialogBean.getContent();
+                            imageView.setImageBitmap(bit);
+
+                            imageView.setOnClickListener(view -> {
+                                Intent intent = new Intent(this, PhotoViewActivity.class);
+                                intent.putExtra("ip",mIp);
+                                intent.putExtra("position",position);
+                                startActivity(intent);
+                            });
+
+                            imageView.setOnLongClickListener(v -> {
+                                saveBitmap(bit);
+                                return true;
+                            });
+
                         }
 
 
@@ -366,12 +389,33 @@ public class ChatActivity extends AppCompatActivity {
                         if (dialogBean.getDataType() == DataType.WORD){
                             imageView.setVisibility(View.GONE);
                             time.setText(dialogBean.getTime());
-                            content.setText((String) dialogBean.getContent());
+                            String text = (String) dialogBean.getContent();
+                            content.setText(text);
+                            content.setOnLongClickListener(view -> {
+                                ClipboardManager clipboardManager = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                                ClipData clipData = ClipData.newPlainText(mIp, text);
+                                clipboardManager.setPrimaryClip(clipData);
+                                Toast.makeText(ChatActivity.this, "复制成功", Toast.LENGTH_SHORT).show();
+                                return true;
+                            });
                         }else {
                             content.setVisibility(View.GONE);
                             time.setText(dialogBean.getTime());
                             Bitmap bit = (Bitmap) dialogBean.getContent();
                             imageView.setImageBitmap(bit);
+
+                            imageView.setOnClickListener(view -> {
+                                Intent intent = new Intent(this, PhotoViewActivity.class);
+                                intent.putExtra("ip",mIp);
+                                intent.putExtra("position",position);
+                                startActivity(intent);
+                            });
+
+                            imageView.setOnLongClickListener(v -> {
+                                saveBitmap(bit);
+                                return true;
+                            });
+
                         }
                     }
             });
@@ -396,6 +440,35 @@ public class ChatActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         EventBus.getDefault().unregister(this);
+    }
+
+    /**
+     * 保存bitmap到本地
+     *
+     * @param bitmap Bitmap
+     */
+    public void saveBitmap(Bitmap bitmap) {
+        new Thread(() -> {
+            File file = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+            File image = new File(file, System.currentTimeMillis() + ".jpg");
+            try {
+                //文件输出流
+                FileOutputStream fileOutputStream = new FileOutputStream(image);
+                //压缩图片，如果要保存png，就用Bitmap.CompressFormat.PNG，要保存jpg就用Bitmap.CompressFormat.JPEG,质量是100%，表示不压缩
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, fileOutputStream);
+                //写入，这里会卡顿，因为图片较大
+                fileOutputStream.flush();
+                //记得要关闭写入流
+                fileOutputStream.close();
+                //成功的提示
+                runOnUiThread(()-> Toast.makeText(this, "图片保存到" + image.getPath(), Toast.LENGTH_SHORT).show());
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                runOnUiThread(()-> Toast.makeText(this, "图片保存失败", Toast.LENGTH_SHORT).show());
+            }
+
+        }).start();
     }
 
 

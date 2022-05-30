@@ -15,6 +15,8 @@ public class MsgType {
     //图片消息
     public static final String IMAGE = "image";
 
+    //群消息
+    public static final String GROUP_MESSAGE = "group_message";
 
 
 }

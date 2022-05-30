@@ -107,7 +107,6 @@ public class SocketServerService extends Service {
      * @param protocol 消息内容
      * @param time     时间
      */
-    @RequiresApi(api = Build.VERSION_CODES.S)
     private void manageWord(String ip, RvRequestProtocol<String> protocol, String time) {
         //消息内容
         String data = protocol.getData();
@@ -120,7 +119,6 @@ public class SocketServerService extends Service {
 
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.S)
     private void sendNotice(String ip, String text, DialogueRecordBean dialogueRecordBean) {
         //获取发送者的昵称
         String username = DataUtil.getNameMap().get(ip);

@@ -5,7 +5,9 @@
       <map>
         <entry key="..\:/AndroidProject/SocketTest_1/app/src/main/res/drawable/bg_edit.xml" value="0.2555" />
         <entry key="..\:/AndroidProject/SocketTest_1/app/src/main/res/drawable/ic_main_contact_200.xml" value="0.2555" />
-        <entry key="..\:/AndroidProject/SocketTest_1/app/src/main/res/layout/activity_chat.xml" value="0.33" />
+        <entry key="..\:/AndroidProject/SocketTest_1/app/src/main/res/layout/activity_chat.xml" value="0.22" />
+        <entry key="..\:/AndroidProject/SocketTest_1/app/src/main/res/layout/activity_main.xml" value="0.28547008547008546" />
+        <entry key="..\:/AndroidProject/SocketTest_1/app/src/main/res/layout/activity_photo_view.xml" value="0.28547008547008546" />
         <entry key="..\:/AndroidProject/SocketTest_1/app/src/main/res/layout/fragment_contact.xml" value="0.28547008547008546" />
         <entry key="..\:/AndroidProject/SocketTest_1/app/src/main/res/layout/fragment_message.xml" value="0.28547008547008546" />
         <entry key="..\:/AndroidProject/SocketTest_1/app/src/main/res/layout/fragment_nearby.xml" value="0.2105978260869565" />

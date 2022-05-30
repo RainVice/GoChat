@@ -2,26 +2,21 @@ package com.rainvice.sockettest_1.thread;
 
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
+import com.rainvice.sockettest_1.bean.InputMsgBean;
 import com.rainvice.sockettest_1.constant.Status;
-import com.rainvice.sockettest_1.event.BusToNearbyEvent;
+import com.rainvice.sockettest_1.protocol.MsgType;
 import com.rainvice.sockettest_1.protocol.RvRequestProtocol;
 import com.rainvice.sockettest_1.utils.DataUtil;
 import com.rainvice.sockettest_1.utils.LogUtil;
+import com.rainvice.sockettest_1.utils.StrZipUtil;
 import com.rainvice.sockettest_1.utils.StringUtil;
-
-import org.greenrobot.eventbus.EventBus;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
-import java.net.InetAddress;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.Objects;
 
 public class UDPSocketServerThread extends Thread {
@@ -36,7 +31,7 @@ public class UDPSocketServerThread extends Thread {
     @Override
     public void run() {
         try {
-            byte[] buf = new byte[1024];//存储发来的消息
+            byte[] buf = new byte[102400];//存储发来的消息
             Gson gson = new Gson();
             //绑定端口的
             DatagramSocket ds = new DatagramSocket(DataUtil.getUDPPort());
@@ -49,17 +44,28 @@ public class UDPSocketServerThread extends Thread {
                 }
                 new Thread(() -> {
                     try {
-                        String json = StringUtil.byteToStr(dp.getData());
+                        byte[] bytes = dp.getData();
+                        bytes = StrZipUtil.uncompressA(bytes);
+                        bytes = StrZipUtil.uncompressA(bytes);
+                        String json = StrZipUtil.uncompress(bytes);
                         LogUtil.d("接收到",json);
                         RvRequestProtocol<String> rvRequestProtocol = gson.fromJson(json, RvRequestProtocol.class);
                         String hostAddress = dp.getAddress().getHostAddress();
                         String data = rvRequestProtocol.getData();
-                        DataUtil.getNameMap().put(hostAddress, data);
-                        Message message = new Message();
-                        message.what = Status.SUCCESS;
-                        mHander.sendMessage(message);
+                        String type = rvRequestProtocol.getType();
+                        if (type.equals(MsgType.MESSAGE)){
+                            DataUtil.getNameMap().put(hostAddress, data);
+                            Message message = new Message();
+                            message.what = Status.SUCCESS;
+                            mHander.sendMessage(message);
+                        }else if (type.equals(MsgType.GROUP_MESSAGE)){
+                            Message message = new Message();
+                            message.what = Status.GROUP_SUCCESS;
+                            message.obj = new InputMsgBean(hostAddress,rvRequestProtocol);
+                            mHander.sendMessage(message);
+                        }
                         LogUtil.d(TAG,"接收到来自 " + hostAddress + " 的数据：" + data);
-                    } catch (JsonSyntaxException e) {
+                    } catch (JsonSyntaxException | IOException e) {
                         e.printStackTrace();
                     }
 

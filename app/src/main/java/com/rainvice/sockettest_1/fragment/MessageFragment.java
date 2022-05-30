@@ -47,8 +47,10 @@ import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class MessageFragment extends Fragment {
 
@@ -98,7 +100,9 @@ public class MessageFragment extends Fragment {
         //初始化点击事件
         initListener();
 
-        mIntent = new Intent(mContext, SocketServerService.class);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            mIntent = new Intent(mContext, SocketServerService.class);
+        }
 
         //启动服务
         mContext.startService(mIntent);
@@ -126,7 +130,7 @@ public class MessageFragment extends Fragment {
             alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v1 -> {
                 String ip = ipView.getText().toString();
                 SendMessageServer sendMessageServer = new SendMessageServer(ip, new RvRequestProtocol<>(MsgType.GET_NAME, "我要名称"));
-                sendMessageServer.sendMsg(new SendMessageServer.Callback() {
+                sendMessageServer.sendTCPMsg(new SendMessageServer.Callback() {
                     @Override
                     public void success(RvResponseProtocol<String> result) {
                         String data = result.getData();
@@ -181,9 +185,13 @@ public class MessageFragment extends Fragment {
     @RequiresApi(api = Build.VERSION_CODES.N)
     private void initRecyclerView() {
         mMessageMap = DataUtil.getMessageMap();
-        ArrayList<DialogueRecordBean> dialogueRecordBeans = new ArrayList<>(mMessageMap.values());
+        List<DialogueRecordBean> dialogueRecordBeans = new ArrayList<>(mMessageMap.values());
         dialogueRecordBeans.sort(Comparator.comparing(DialogueRecordBean::getTimes).reversed());
         mRvAdapter = new RvAdapter<>(dialogueRecordBeans, R.layout.item_message_list, (itemView, position, dialogueRecordBean) -> {
+            if (dialogueRecordBean.getIp().equals(MsgType.GROUP_MESSAGE)) {
+                itemView.setVisibility(View.GONE);
+                return;
+            }
             long count = dialogueRecordBean.getDialogs().stream().filter(dialogBean -> !dialogBean.isRead()).count();
             CardView msgNumView = itemView.findViewById(R.id.msg_num);
             TextView usernameView = itemView.findViewById(R.id.username);
@@ -201,7 +209,7 @@ public class MessageFragment extends Fragment {
             if (Objects.isNull(username)) {
                 RvRequestProtocol<String> protocol = new RvRequestProtocol<>(MsgType.GET_NAME, "给我名称");
                 SendMessageServer sendMessageServer = new SendMessageServer(ip, protocol);
-                sendMessageServer.sendMsg(new SendMessageServer.Callback() {
+                sendMessageServer.sendTCPMsg(new SendMessageServer.Callback() {
                     @Override
                     public void success(RvResponseProtocol<String> result) {
                         String data = result.getData();

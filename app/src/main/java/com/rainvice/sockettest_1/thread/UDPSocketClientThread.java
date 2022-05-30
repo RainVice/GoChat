@@ -7,6 +7,7 @@ import com.rainvice.sockettest_1.protocol.MsgType;
 import com.rainvice.sockettest_1.protocol.RvRequestProtocol;
 import com.rainvice.sockettest_1.utils.DataUtil;
 import com.rainvice.sockettest_1.utils.LogUtil;
+import com.rainvice.sockettest_1.utils.StrZipUtil;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -27,9 +28,11 @@ public class UDPSocketClientThread extends Thread{
             LogUtil.d(TAG,"UDP 客户端已启动");
             do {
                 RvRequestProtocol<String> requestProtocol = new RvRequestProtocol<>(MsgType.MESSAGE, DataUtil.getUsername());
-                String json = gson.toJson(requestProtocol) + new String(new byte[100], StandardCharsets.UTF_8);
-                byte[] bytes = json.getBytes(StandardCharsets.UTF_8);
-                DatagramPacket dp = new DatagramPacket(bytes,json.length(), adds, DataUtil.getUDPPort());
+                String json = gson.toJson(requestProtocol);
+                byte[] bytes = StrZipUtil.compress(json);
+                bytes = StrZipUtil.compress(bytes);
+                byte[] compress = StrZipUtil.compress(bytes);
+                DatagramPacket dp = new DatagramPacket(compress,compress.length, adds, DataUtil.getUDPPort());
                 ds.send(dp);
                 LogUtil.d(TAG,"发送消息");
                 sleep(5 * 1000);

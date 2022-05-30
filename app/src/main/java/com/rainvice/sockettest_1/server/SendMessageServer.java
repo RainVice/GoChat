@@ -5,7 +5,8 @@ import android.os.Handler;
 import com.rainvice.sockettest_1.constant.Status;
 import com.rainvice.sockettest_1.protocol.RvRequestProtocol;
 import com.rainvice.sockettest_1.protocol.RvResponseProtocol;
-import com.rainvice.sockettest_1.thread.SendMsgThread;
+import com.rainvice.sockettest_1.thread.TCPSendMsgThread;
+import com.rainvice.sockettest_1.thread.UDPSendMsgThread;
 
 public class SendMessageServer {
 
@@ -21,8 +22,12 @@ public class SendMessageServer {
 
     }
 
+    public SendMessageServer(RvRequestProtocol<String> protocol){
+        this.mProtocol = protocol;
+    }
 
-    public void sendMsg(Callback callback){
+
+    public void sendTCPMsg(Callback callback){
         this.mHandler = new Handler(message -> {
             switch (message.what){
                 case Status.SUCCESS:
@@ -34,8 +39,24 @@ public class SendMessageServer {
             }
             return true;
         });
-        SendMsgThread sendMsgThread = new SendMsgThread(mIp, mProtocol, mHandler);
-        sendMsgThread.start();
+        TCPSendMsgThread tcpSendMsgThread = new TCPSendMsgThread(mIp, mProtocol, mHandler);
+        tcpSendMsgThread.start();
+    }
+
+    public void sendUDPMsg(Callback callback){
+        this.mHandler = new Handler(message -> {
+            switch (message.what){
+                case Status.SUCCESS:
+                    callback.success((RvResponseProtocol<String>) message.obj);
+                    break;
+                case Status.ERROR:
+                    callback.error((RvResponseProtocol<String>) message.obj);
+                    break;
+            }
+            return true;
+        });
+        UDPSendMsgThread udpSendMsgThread = new UDPSendMsgThread(mProtocol, mHandler);
+        udpSendMsgThread.start();
     }
 
 
