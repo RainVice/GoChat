@@ -79,7 +79,7 @@ public class MessageFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_message, container, false);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
+    @RequiresApi(api = Build.VERSION_CODES.S)
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         EventBus.getDefault().register(this);
@@ -99,9 +99,7 @@ public class MessageFragment extends Fragment {
         //初始化点击事件
         initListener();
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            mIntent = new Intent(mContext, SocketServerService.class);
-        }
+        mIntent = new Intent(mContext, SocketServerService.class);
 
         //启动服务
         mContext.startService(mIntent);
@@ -121,7 +119,7 @@ public class MessageFragment extends Fragment {
         TextView text = view.findViewById(R.id.text);
         AlertDialog alertDialog = builder.setView(view)
                 .setTitle("添加聊天")
-                .setNegativeButton("取消",null)
+                .setNegativeButton("取消", null)
                 .setPositiveButton("确定", null)
                 .create();
         mImageView.setOnClickListener(v -> {
@@ -133,10 +131,10 @@ public class MessageFragment extends Fragment {
                     @Override
                     public void success(RvResponseProtocol<String> result) {
                         String data = result.getData();
-                        if (data == null){
+                        if (data == null) {
                             text.setVisibility(View.VISIBLE);
                         }
-                        DataUtil.getNameMap().put(ip,data);
+                        DataUtil.getNameMap().put(ip, data);
                         Intent intent = new Intent(getContext(), ChatActivity.class);
                         intent.putExtra(IntentConstant.IP, ip);
                         intent.putExtra(IntentConstant.USERNAME, data);
@@ -236,9 +234,9 @@ public class MessageFragment extends Fragment {
                 Intent intent = new Intent(getContext(), ChatActivity.class);
                 intent.putExtra(IntentConstant.IP, ip);
                 String name = DataUtil.getNameMap().get(ip);
-                if (name == null){
+                if (name == null) {
                     intent.putExtra(IntentConstant.USERNAME, usernameView.getText().toString());
-                }else {
+                } else {
                     intent.putExtra(IntentConstant.USERNAME, name);
                 }
                 startActivity(intent);
