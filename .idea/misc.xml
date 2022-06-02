@@ -3,6 +3,12 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/AndroidProject/GoChat/app/src/main/res/layout/activity_main.xml" value="0.34791666666666665" />
+        <entry key="..\:/AndroidProject/GoChat/app/src/main/res/layout/dialog_add_message.xml" value="0.34791666666666665" />
+        <entry key="..\:/AndroidProject/GoChat/app/src/main/res/layout/fragment_message.xml" value="0.34791666666666665" />
+        <entry key="..\:/AndroidProject/GoChat/app/src/main/res/layout/fragment_nearby.xml" value="0.34791666666666665" />
+        <entry key="..\:/AndroidProject/GoChat/app/src/main/res/layout/item_chat_list.xml" value="0.34791666666666665" />
+        <entry key="..\:/AndroidProject/GoChat/app/src/main/res/menu/b_n_v_menu.xml" value="0.34791666666666665" />
         <entry key="..\:/AndroidProject/SocketTest_1/app/src/main/res/drawable/bg_edit.xml" value="0.2555" />
         <entry key="..\:/AndroidProject/SocketTest_1/app/src/main/res/drawable/ic_main_contact_200.xml" value="0.2555" />
         <entry key="..\:/AndroidProject/SocketTest_1/app/src/main/res/layout/activity_chat.xml" value="0.33" />
